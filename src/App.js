@@ -24,6 +24,30 @@ class App extends React.Component {
     }
   }
 
+  handleSubmit(){
+    let url = `https://api.nasa.gov/neo/rest/v1/neo/` + this.state.asteroidInputVal + `?api_key=`+ API_KEY
+    fetch(url)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            name: result.name,
+            nasaJplUrl: result.nasa_jpl_url,
+            isPotentiallyHazardousAsteroid: result.is_potentially_hazardous_asteroid
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
+  }
+
   render() {
     return (
       <div className="App">
@@ -31,7 +55,7 @@ class App extends React.Component {
                value={this.state.asteroidInputVal}
                placeholder="Enter Asteroid ID"
                onChange={inputValue => this.changeValue(inputValue)} />
-        <button disabled={this.state.bool}>Submit</button>
+        <button onClick={() => this.handleSubmit()} disabled={this.state.bool}>Submit</button>
         <button >Random Asteroid</button>
 
         <div>
