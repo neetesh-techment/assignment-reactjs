@@ -48,6 +48,30 @@ class App extends React.Component {
       )
   }
 
+  handleRandomSubmit(){
+    fetch('https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=DEMO_KEY')
+      .then(res => res.json())
+      .then(
+        (result) => {
+          let ids = result.near_earth_objects.map((obj) => obj.id)
+          let randomId = ids[Math.floor(Math.random() * ids.length)];
+
+          let url = `https://api.nasa.gov/neo/rest/v1/neo/` + randomId + `?api_key=`+ API_KEY
+          fetch(url)
+            .then(res => res.json())
+            .then(
+              (result) => {
+                this.setState({
+                  name: result.name,
+                  nasaJplUrl: result.nasa_jpl_url,
+                  isPotentiallyHazardousAsteroid: result.is_potentially_hazardous_asteroid
+                });
+              }
+            )
+        }
+      )
+  }
+
   render() {
     return (
       <div className="App">
@@ -56,7 +80,7 @@ class App extends React.Component {
                placeholder="Enter Asteroid ID"
                onChange={inputValue => this.changeValue(inputValue)} />
         <button onClick={() => this.handleSubmit()} disabled={this.state.bool}>Submit</button>
-        <button >Random Asteroid</button>
+        <button onClick={() => this.handleRandomSubmit()}>Random Asteroid</button>
 
         <div>
           <p>Name: {this.state.name}</p>
