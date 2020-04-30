@@ -77,7 +77,7 @@ class App extends React.Component {
         <div>
           <p>Name: {this.state.name}</p>
           <p>Nasa Jpl URL: {this.state.nasaJplUrl}</p>
-          <p>Is Potentially Hazardous Asteroid: {this.state.isPotentiallyHazardousAsteroid}</p>
+          <p>Is Potentially Hazardous Asteroid: {this.state.isPotentiallyHazardousAsteroid.toString()}</p>
         </div>
       </div>
     );
