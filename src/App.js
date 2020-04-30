@@ -25,7 +25,23 @@ class App extends React.Component {
   }
 
   handleSubmit(){
-    let url = `https://api.nasa.gov/neo/rest/v1/neo/` + this.state.asteroidInputVal + `?api_key=`+ API_KEY
+    this.callApi(this.state.asteroidInputVal);
+  }
+
+  handleRandomSubmit(){
+    fetch('https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=DEMO_KEY')
+      .then(res => res.json())
+      .then(
+        (result) => {
+          let ids = result.near_earth_objects.map((obj) => obj.id)
+          let randomId = ids[Math.floor(Math.random() * ids.length)];
+          this.callApi(randomId);
+        }
+      )
+  }
+
+  callApi(inputValue){
+    let url = `https://api.nasa.gov/neo/rest/v1/neo/` + inputValue + `?api_key=`+ API_KEY
     fetch(url)
       .then(res => res.json())
       .then(
@@ -44,30 +60,6 @@ class App extends React.Component {
             isLoaded: true,
             error
           });
-        }
-      )
-  }
-
-  handleRandomSubmit(){
-    fetch('https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=DEMO_KEY')
-      .then(res => res.json())
-      .then(
-        (result) => {
-          let ids = result.near_earth_objects.map((obj) => obj.id)
-          let randomId = ids[Math.floor(Math.random() * ids.length)];
-
-          let url = `https://api.nasa.gov/neo/rest/v1/neo/` + randomId + `?api_key=`+ API_KEY
-          fetch(url)
-            .then(res => res.json())
-            .then(
-              (result) => {
-                this.setState({
-                  name: result.name,
-                  nasaJplUrl: result.nasa_jpl_url,
-                  isPotentiallyHazardousAsteroid: result.is_potentially_hazardous_asteroid
-                });
-              }
-            )
         }
       )
   }
